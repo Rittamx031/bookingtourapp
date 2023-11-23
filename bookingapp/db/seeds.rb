@@ -20,11 +20,10 @@ puts 'User seed data has been created!'
   )
 end
 
-puts 'Tour categories seed data has been created!'
 
+puts 'Tour and tour details seed data has been created!'
 10.times do
   tour_category = TourCategory.order(Arel.sql('RAND()')).first
-
   tour = Tour.create(
     tour_name: Faker::Lorem.words(number: 3).join(' '),
     time_duration: Faker::Time.between(from: DateTime.now - 1, to: DateTime.now),
@@ -34,6 +33,7 @@ puts 'Tour categories seed data has been created!'
   )
 
   # Create TourDetails
+  #
   TourDetail.create(
     detail_description: Faker::Lorem.sentence,
     tour_detail_name: "#{tour.tour_name} Details",
@@ -70,26 +70,26 @@ puts 'Tour seed data has been created!'
 end
 
 puts 'Booking seed data has been created!'
-
-10.times do
-  FollowingTour.create(
-    tours_id: Tour.pluck(:id).sample,
-    users_id: User.pluck(:id).sample
-  )
-end
-require 'faker'
 10.times do
   Review.create(
     review_text: Faker::Lorem.paragraph,
-    users_id: User.pluck(:id).sample,
-    tours_id: Tour.pluck(:id).sample
+    user: User.all.sample,
+    tour: Tour.all.sample
   )
 end
 puts 'Fake review data has been created!'
 10.times do
   ImageReview.create(
     image_url: Faker::Internet.url,
-    reviews_id: Review.pluck(:id).sample
+    review: Review.all.sample
   )
 end
 puts 'Fake image review data has been created!'
+
+10.times do
+  TourFollowing.create(
+    tour: Tour.all.sample,
+    user: User.all.sample
+  )
+end
+puts 'TourFollowing seed data has been created!'

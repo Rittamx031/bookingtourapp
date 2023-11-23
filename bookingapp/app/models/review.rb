@@ -1,8 +1,8 @@
 # app/models/review.rb
 
 class Review < ApplicationRecord
-  belongs_to :user,foreign_key: 'users_id'
-  belongs_to :tour, foreign_key: 'tours_id'
+  belongs_to :user ,foreign_key: :user_id
+  belongs_to :tour ,foreign_key: :tour_id
   has_many :image_reviews
 
   validates :review_text, presence: true

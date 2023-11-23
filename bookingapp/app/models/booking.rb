@@ -1,6 +1,8 @@
 class Booking < ApplicationRecord
-  belongs_to :tour_detail ,foreign_key: 'tour_details_id'
-  belongs_to :user ,foreign_key: 'users_id'
+  belongs_to :tour_detail ,foreign_key: :tour_detail_id
+  belongs_to :user ,foreign_key: 'user_id'
+
+
 
   enum status: {
     pending: 0,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_23_090243) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_24_035929) do
   create_table "bookings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "booking_date"
     t.string "phone", null: false
@@ -21,46 +21,36 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_090243) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "tour_details_id", null: false
-    t.bigint "users_id", null: false
-    t.index ["tour_details_id"], name: "index_bookings_on_tour_details_id"
-    t.index ["users_id"], name: "index_bookings_on_users_id"
-  end
-
-  create_table "following_tours", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "tours_id", null: false
-    t.bigint "users_id", null: false
-    t.index ["tours_id", "users_id"], name: "index_following_tours_on_tours_id_and_users_id", unique: true
-    t.index ["tours_id"], name: "index_following_tours_on_tours_id"
-    t.index ["users_id"], name: "index_following_tours_on_users_id"
+    t.bigint "tour_detail_id", null: false
+    t.bigint "user_id", null: false
+    t.index ["tour_detail_id"], name: "index_bookings_on_tour_detail_id"
+    t.index ["user_id"], name: "index_bookings_on_user_id"
   end
 
   create_table "image_reviews", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "reviews_id", null: false
-    t.index ["reviews_id"], name: "index_image_reviews_on_reviews_id"
+    t.bigint "review_id", null: false
+    t.index ["review_id"], name: "index_image_reviews_on_review_id"
   end
 
   create_table "image_tours", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "tours_id", null: false
-    t.index ["tours_id"], name: "index_image_tours_on_tours_id"
+    t.bigint "tour_id", null: false
+    t.index ["tour_id"], name: "index_image_tours_on_tour_id"
   end
 
   create_table "reviews", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "review_text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "users_id", null: false
-    t.bigint "tours_id", null: false
-    t.index ["tours_id"], name: "index_reviews_on_tours_id"
-    t.index ["users_id"], name: "index_reviews_on_users_id"
+    t.bigint "user_id", null: false
+    t.bigint "tour_id", null: false
+    t.index ["tour_id"], name: "index_reviews_on_tour_id"
+    t.index ["user_id"], name: "index_reviews_on_user_id"
   end
 
   create_table "tour_categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -77,8 +67,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_090243) do
     t.decimal "price", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "tours_id", null: false
-    t.index ["tours_id"], name: "index_tour_details_on_tours_id"
+    t.bigint "tour_id"
+    t.index ["tour_id"], name: "index_tour_details_on_tour_id"
+  end
+
+  create_table "tour_followings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "tour_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tour_id"], name: "index_tour_followings_on_tour_id"
+    t.index ["user_id", "tour_id"], name: "index_tour_followings_on_user_id_and_tour_id", unique: true
+    t.index ["user_id"], name: "index_tour_followings_on_user_id"
   end
 
   create_table "tours", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -88,8 +88,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_090243) do
     t.text "tour_description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "tour_categories_id"
-    t.index ["tour_categories_id"], name: "index_tours_on_tour_categories_id"
+    t.bigint "tour_category_id"
+    t.index ["tour_category_id"], name: "index_tours_on_tour_category_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -104,14 +104,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_23_090243) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "bookings", "tour_details", column: "tour_details_id"
-  add_foreign_key "bookings", "users", column: "users_id"
-  add_foreign_key "following_tours", "tours", column: "tours_id"
-  add_foreign_key "following_tours", "users", column: "users_id"
-  add_foreign_key "image_reviews", "reviews", column: "reviews_id"
-  add_foreign_key "image_tours", "tours", column: "tours_id"
-  add_foreign_key "reviews", "tours", column: "tours_id"
-  add_foreign_key "reviews", "users", column: "users_id"
-  add_foreign_key "tour_details", "tours", column: "tours_id"
-  add_foreign_key "tours", "tour_categories", column: "tour_categories_id"
+  add_foreign_key "bookings", "tour_details"
+  add_foreign_key "bookings", "users"
+  add_foreign_key "image_reviews", "reviews"
+  add_foreign_key "image_tours", "tours"
+  add_foreign_key "reviews", "tours"
+  add_foreign_key "reviews", "users"
+  add_foreign_key "tour_details", "tours"
+  add_foreign_key "tour_followings", "tours"
+  add_foreign_key "tour_followings", "users"
+  add_foreign_key "tours", "tour_categories"
 end

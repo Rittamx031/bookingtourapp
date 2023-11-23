@@ -1,4 +1,4 @@
 class ImageTour < ApplicationRecord
-  belongs_to :tour, foreign_key: 'tours_id'
+  belongs_to :tour
   validates :image_url, presence: true
 end
