@@ -77,7 +77,6 @@ puts 'Booking seed data has been created!'
     users_id: User.pluck(:id).sample
   )
 end
-require 'faker'
 10.times do
   Review.create(
     review_text: Faker::Lorem.paragraph,
